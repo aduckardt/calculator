@@ -23,6 +23,8 @@ public class Main {
             // initialize log4j appender
             initLog4j();
             
+            log.info("Expression: {}", expression);
+            
         } catch (LogLevelFormatException e) {
             System.out.println("Invalid log level argument. Please use of the following values: INFO, DEBUG, ERROR");
         }
