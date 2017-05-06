@@ -1,5 +1,6 @@
 package calculator;
 
+import calculator.parser.Parser;
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.lf5.LogLevel;
 import org.apache.log4j.lf5.LogLevelFormatException;
@@ -22,6 +23,10 @@ public class Main {
             initArgs(args);
             // initialize log4j appender
             initLog4j();
+            // create a parser to parse expression into the Lexems
+            Parser parser = new Parser(expression);
+            // parse the expression
+            parser.parse();
             
             log.info("Expression: {}", expression);
             
