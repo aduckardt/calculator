@@ -28,7 +28,6 @@ public class Main {
             // parse the expression
             parser.parse();
             
-            log.info("Expression: {}", expression);
             
         } catch (LogLevelFormatException e) {
             System.out.println("Invalid log level argument. Please use of the following values: INFO, DEBUG, ERROR");

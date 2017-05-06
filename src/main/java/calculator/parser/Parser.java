@@ -41,12 +41,14 @@ public class Parser {
      * Parse the expression into the tree of the {@link Lexem Lexem} objects.
      */
     public void parse(){
+        log.info("Start parsing expression: {}", stringExpression);
         nextChar();
         rootLexem = new FunctionLexem("Root", -1);
         parseFunction(rootLexem,1 );
         if(log.isDebugEnabled()) {
             printLexems();
         }
+        log.info("Parsing expression: {} -- Ends", stringExpression);
     }
     
     /**
