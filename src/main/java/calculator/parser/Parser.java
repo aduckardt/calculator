@@ -93,6 +93,7 @@ public class Parser {
        // System.out.println("Function: " + functionName);
         
         Lexem function = new FunctionLexem(functionName, startPos);
+        log.debug("Parsed the  function lexem. The function name: \"{}\"", functionName);
         // need to parse args of the function
         if(validateAndSkip('(')){
             while(!validateAndSkip(')') && character!=-1) {
@@ -108,6 +109,7 @@ public class Parser {
      * @param level - the level at which {@link FunctionLexem FunctionLexem} is added.
      */
     private void parseArgs(Lexem parent, int level){
+        log.debug("Parsing the argument of the function lexem: \"{}\"", parent.getValue());
         int startPos = this.currentPosition;
         if(character=='-' || ((character >= '0' && character <= '9'))){
             // parse constant
@@ -115,10 +117,10 @@ public class Parser {
                 nextChar();
             }
             int x = Integer.parseInt(stringExpression.substring(startPos, this.currentPosition));
-           // System.out.println("Constant: " + x);
             Lexem lexem = new ConstantLexem(x, startPos);
             lexem.setLevel(level+1);
             parent.addChild(lexem);
+            log.debug("Parsed the constant lexem. The value : {}", x);
         } else  {
             // new function here or variable here
             String name = parseName();
@@ -134,6 +136,8 @@ public class Parser {
         }
         // skip comma character
         validateAndSkip(',');
+        log.debug("The argument of the function lexem: \"{}\"  - Parsed. Argument name/value :\"{}\"", parent.getValue(),
+                ((Lexem)(parent.getChildNodes().getLast())).getValue());
     }
     /**
      * Parse the the variable and put them into {@link VariableLexem VariableLexem} or {@link VariableReferenceLexem VariableReferenceLexem}
@@ -143,14 +147,15 @@ public class Parser {
     private void parseVariable(Lexem parent, int level){
         int startPos = this.currentPosition;
         String name = parseName();
-       // System.out.println("varName: " + name);
         Lexem lexem;
         if("let".equals(parent.getValue())) {
             // it is declaration. the declaration is only in let function
             lexem = new VariableLexem(name, startPos);
+            log.debug("Parsed the  declaration of \"{}\" variable", name);
         } else {
             // it is the reference to the previously added variable
             lexem = new VariableReferenceLexem(name, startPos);
+            log.debug("Parsed the reference to \"{}\" variable", name);
         }
         lexem.setLevel(level+1);
         parent.addChild(lexem);
