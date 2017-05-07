@@ -35,7 +35,11 @@ public class Main {
             
         } catch (LogLevelFormatException e) {
             System.out.println("Invalid log level argument. Please use of the following values: INFO, DEBUG, ERROR");
+        } catch (Throwable e) {
+            log.error(e.getMessage(), e);
+            System.out.println("Error occurs during execution. See the logs for details");
         }
+        
     }
     
     private static void initArgs(String[] args) throws LogLevelFormatException {
