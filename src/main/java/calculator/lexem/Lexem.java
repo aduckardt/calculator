@@ -7,7 +7,7 @@ import java.util.LinkedList;
  * that expression is built of. The lexem represent a meaningful part of the expression. Any symbols like comma and parenthesis
  * are excluded from the list of lexems.
  *
- * For example, expression <b>add(1, 2)</b> consists of  the following lexem:
+ * For example, expression <b>add(1, 2)</b> consists of  the following lexems:
  * <b>add</b>,<b>3</b>,<b>2</b>.
  *
  * Moreover, the lexems are arranged as a tree structure to simplify parsing expression process and further processing.
@@ -16,7 +16,7 @@ import java.util.LinkedList;
  */
 public abstract class Lexem<T> {
     /**
-     * The actual value of the lexem. Might be a String and Integer. The type depends on {@link LexemType LexemType}
+     * The actual value of the lexem. Might be a String or Integer. The type depends on {@link LexemType LexemType}
      * and might be {@link String String} or {@link Integer Integer}.
      */
     private T value;

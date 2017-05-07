@@ -1,5 +1,7 @@
 package calculator;
 
+import calculator.function.Function;
+import calculator.function.FunctionBuilder;
 import calculator.parser.Parser;
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.lf5.LogLevel;
@@ -27,7 +29,9 @@ public class Main {
             Parser parser = new Parser(expression);
             // parse the expression
             parser.parse();
+            Function function = new FunctionBuilder(parser.getRootLexem()).build();
             
+            System.out.println(function.eval());
             
         } catch (LogLevelFormatException e) {
             System.out.println("Invalid log level argument. Please use of the following values: INFO, DEBUG, ERROR");
