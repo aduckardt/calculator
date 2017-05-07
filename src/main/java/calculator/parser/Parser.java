@@ -1,6 +1,7 @@
 package calculator.parser;
 
 
+import calculator.function.FunctionName;
 import calculator.lexem.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -150,7 +151,7 @@ public class Parser {
         int startPos = this.currentPosition;
         String name = parseName();
         Lexem lexem;
-        if("let".equals(parent.getValue())) {
+        if(FunctionName.LET.equals(parent.getValue())) {
             // it is declaration. the declaration is only in let function
             lexem = new VariableLexem(name, startPos);
             log.debug("Parsed the  declaration of \"{}\" variable", name);

@@ -65,7 +65,7 @@ public class FunctionBuilder {
         } else if (lexem.isVariableReference()){
             return buildReferenceFunction((VariableReferenceLexem)lexem);
         } else if (lexem.isFunction()){
-            if("let".equals(lexem.getValue())){
+            if(FunctionName.LET.equals(lexem.getValue())){
                 // let function
                 // 2 first children are variable functions
                 buildVariableFunction(lexem);
@@ -87,13 +87,13 @@ public class FunctionBuilder {
         Lexem fArg = getLexem(lexem, 0);
         Lexem sArg = getLexem(lexem, 1);
         
-        if("add".equals(lexem.getValue())) {
+        if(FunctionName.ADDITION.equals(lexem.getValue())) {
             return new AddFunction(buildFunction(fArg), buildFunction(sArg));
-        }else if("sub".equals(lexem.getValue())) {
+        }else if(FunctionName.SUBSTITUTION.equals(lexem.getValue())) {
             return new SubFunction(buildFunction(fArg), buildFunction(sArg));
-        }else if("mult".equals(lexem.getValue())) {
+        }else if(FunctionName.MULTIPLICATION.equals(lexem.getValue())) {
             return new MultFunction(buildFunction(fArg), buildFunction(sArg));
-        }else if("div".equals(lexem.getValue())) {
+        }else if(FunctionName.DIVISION.equals(lexem.getValue())) {
             return new DivFunction(buildFunction(fArg), buildFunction(sArg));
         }
         throw new RuntimeException(String.format("Invalid expression. Unknown %s function name", lexem.getValue()));
@@ -121,7 +121,7 @@ public class FunctionBuilder {
     /**
      * Finds the {@link VariableLexem VariableLexem} that contains the variable definition. It is the closest ascenders lexem to this one.
      * @param lexem
-     * @return {@link Function Function}
+     * @return {@link Lexem Lexem}
      */
     private VariableLexem findVariable(Lexem lexem, String varToFind) {
         VariableLexem result = null;
@@ -135,7 +135,7 @@ public class FunctionBuilder {
                     break;
                 }
             }
-            if(!isFound) {
+            if(!isFound && lexem.getParent()!=null) {
                 // if variable not found go to the upper level
                 result = findVariable(lexem.getParent(), varToFind);
             }
@@ -157,7 +157,6 @@ public class FunctionBuilder {
      * The 1st one is used to build a key to store this Function into the local map for future references.
      *
      * @param let - {@link Lexem Lexem} to convert
-     * @return {@link Function Function}
      */
     private void buildVariableFunction(Lexem let) {
         Lexem var = getLexem(let, 0);
