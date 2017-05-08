@@ -60,13 +60,8 @@ public class Main {
         Properties p = new Properties();
         String format = "%d %p [%c][%t] - %m%n";
     
-        p.setProperty("log4j.rootLogger", logLevel.toString()+",stdout,log");
+        p.setProperty("log4j.rootLogger", logLevel.toString()+",log");
         p.setProperty("log4j.logger.calculator", logLevel.toString());
-        //
-        p.setProperty("log4j.appender.stdout", "org.apache.log4j.ConsoleAppender");
-        p.setProperty("log4j.appender.stdout.Threshold", logLevel.toString());
-        p.setProperty("log4j.appender.stdout.layout", "org.apache.log4j.PatternLayout");
-        p.setProperty("log4j.appender.stdout.layout.ConversionPattern", format);
         //
         p.setProperty("log4j.appender.log", "org.apache.log4j.RollingFileAppender");
         p.setProperty("log4j.appender.log.Threshold", logLevel.toString());
