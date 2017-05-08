@@ -5,6 +5,8 @@ import calculator.lexem.ConstantLexem;
 import calculator.lexem.Lexem;
 import calculator.lexem.VariableLexem;
 import calculator.lexem.VariableReferenceLexem;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -16,6 +18,8 @@ import java.util.Map;
  * Created by Alexander Dukkardt on 2017-05-06.
  */
 public class FunctionBuilder {
+    private Logger log = LoggerFactory.getLogger(this.getClass());
+    
     /**
      * The root element of {@link Lexem Lexem} tree.
      */
@@ -38,10 +42,13 @@ public class FunctionBuilder {
      * @return
      */
     public Function build(){
+        log.info("Build Function representation -- START");
         // due to root lexem is fake we have to get the first child. This child is an expression that was parsed
         Lexem functionLex = getLexem(rootLexem, 0);
         
-        return buildFunction(functionLex);
+        Function f = buildFunction(functionLex);
+        log.info("Build Function representation -- ENDS");
+        return f;
     }
     
     /**
@@ -86,17 +93,22 @@ public class FunctionBuilder {
     private Function createFunctionInstance(Lexem lexem){
         Lexem fArg = getLexem(lexem, 0);
         Lexem sArg = getLexem(lexem, 1);
-        
+    
+        log.debug("Building function for {} lexem : {}({},{})", lexem.getValue(), lexem.getValue(), fArg.getValue(), sArg.getValue());
+        Function f=null;
         if(FunctionName.ADDITION.equals(lexem.getValue())) {
-            return new AddFunction(buildFunction(fArg), buildFunction(sArg));
+            f= new AddFunction(buildFunction(fArg), buildFunction(sArg));
         }else if(FunctionName.SUBSTITUTION.equals(lexem.getValue())) {
-            return new SubFunction(buildFunction(fArg), buildFunction(sArg));
+            f= new SubFunction(buildFunction(fArg), buildFunction(sArg));
         }else if(FunctionName.MULTIPLICATION.equals(lexem.getValue())) {
-            return new MultFunction(buildFunction(fArg), buildFunction(sArg));
+            f= new MultFunction(buildFunction(fArg), buildFunction(sArg));
         }else if(FunctionName.DIVISION.equals(lexem.getValue())) {
-            return new DivFunction(buildFunction(fArg), buildFunction(sArg));
+            f= new DivFunction(buildFunction(fArg), buildFunction(sArg));
+        } else {
+            throw new RuntimeException(String.format("Invalid expression. Unknown %s function name", lexem.getValue()));
         }
-        throw new RuntimeException(String.format("Invalid expression. Unknown %s function name", lexem.getValue()));
+        log.debug("Function for {} lexem : {}({},{}) is built", lexem.getValue(), lexem.getValue(), fArg.getValue(), sArg.getValue());
+        return f;
     }
     
     
@@ -106,6 +118,7 @@ public class FunctionBuilder {
      * @return {@link Function Function}
      */
     private Function buildReferenceFunction(VariableReferenceLexem lexem) {
+        log.debug("Building function for the reference of variable \"{}\"", lexem.getValue());
         // need to up through the lexem tree and found the nearest variable lexem that contains the same variable name
         VariableLexem var = findVariable(lexem.getParent(), lexem.getValue());
         if(var!=null) {
@@ -113,6 +126,7 @@ public class FunctionBuilder {
             String functionKey = buildKey(var);
             if (varFuncMap.containsKey(functionKey)) {
                 // function is already created
+                log.debug("Function for the reference of variable \"{}\" is found.", lexem.getValue());
                 return varFuncMap.get(functionKey);
             }
         }
@@ -148,7 +162,10 @@ public class FunctionBuilder {
      * @return {@link Function Function}
      */
     private Function buildConstantFunction(ConstantLexem lexem) {
-        return new ConstantFunction(lexem.getValue());
+        log.debug("Building function for constant lexem : ({})", lexem);
+        Function f = new ConstantFunction(lexem.getValue());
+        log.debug("Function for constant lexem : ({}) is built", lexem);
+        return f;
     }
     /**
      * Converts {@link calculator.lexem.FunctionLexem FunctionLexem} that represents let function in expression
@@ -161,9 +178,12 @@ public class FunctionBuilder {
     private void buildVariableFunction(Lexem let) {
         Lexem var = getLexem(let, 0);
         Lexem varExp = getLexem(let, 1);
+    
+        log.debug("Building function for the definition of variable \"{}\"", var.getValue());
         
         Function varFunc = new VariableFunction(buildFunction(varExp));
-    
+        String key = buildKey(var);
+        log.debug("Function for the definition of variable \"{}\" is built. Putting into the local map with the key [{}] ... ", var.getValue(),key);
         varFuncMap.put(buildKey(var), varFunc);
     }
     
