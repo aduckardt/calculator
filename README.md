@@ -41,7 +41,7 @@ This application evaluates the value of expression that is one of the following:
 * Variables: strings of characters, where each character is one of a-z, A-Z
 * Arithmetic functions: add, sub, mult, div, each taking two arbitrary expressions as arguments.  In other words, each argument may be any of the expressions on this list.
 * A “let” operator for assigning values to variables:
-	**_let(<variable name>, <value expression>, <expression where variable is used>)_**
+	**_let(variable name, value expression, expression where variable is used)_**
 	
 As with arithmetic functions, the value expression and the expression where the variable is used may be an arbitrary expression from this list. 
 
